@@ -9,7 +9,7 @@ const Navbar = () => {
     <div className='h-20 flex items-center justify-between'>
       {/* left */}
       <div className='md:hidden lg:block w-[20%]'>
-        <Link href='/' className='font-bold text-xl text-blue-600'>T-SOCIAL</Link>
+        <Link href='/' className='font-bold text-xl text-blue-600'>TRON-SOCIAL</Link>
       </div>
       {/* center */}
       <div className='hidden md:flex w-[50%] text-sm items-center justify-between'>
