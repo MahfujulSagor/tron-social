@@ -3,7 +3,7 @@
 import { addStory } from "@/lib/actions";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useOptimistic } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 
 const StoryList = ({ stories, userId }) => {
@@ -15,12 +15,13 @@ const StoryList = ({ stories, userId }) => {
   const add = async () => {
     if (!img?.secure_url) return;
 
-    addOptimisticStory({
+    const newStory = {
       id: Math.random(),
       img: img.secure_url,
+      imgId: img.public_id,
       createdAt: new Date(Date.now()),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      userId: userId,
+      userId,
       user: {
         id: userId,
         username: "Sending...",
@@ -35,20 +36,24 @@ const StoryList = ({ stories, userId }) => {
         website: "",
         createdAt: new Date(Date.now()),
       },
-    });
+    };
+
+    addOptimisticStory(newStory);
 
     try {
-      const createdStory = await addStory(img.secure_url);
+      const createdStory = await addStory(img.secure_url, img.public_id);
       setStoryList((prev) => [createdStory, ...prev]);
+    } catch (err) {
+      console.error("Failed to create story:", err);
+    }finally {
       setImg(null);
-    } catch (err) {}
+    }
   };
 
-  const [optimisticStories, addOptimisticStory] = useState(storyList);
-
-  const handleAddOptimisticStory = (value) => {
-    addOptimisticStory((prev) => [value, ...prev]);
-  };
+  const [optimisticStories, addOptimisticStory] = useOptimistic(
+    storyList,
+    (state, value) => [value, ...state]
+  );
 
   return (
     <>
@@ -66,7 +71,7 @@ const StoryList = ({ stories, userId }) => {
               alt="User Avatar"
               width={80}
               height={80}
-              className="w-20 h-20 rounded-full ring-2 object-cover"
+              className="w-20 h-20 rounded-full ring-2 object-cover blur-[1px]"
               onClick={() => open()}
             />
             {img ? (
@@ -78,7 +83,7 @@ const StoryList = ({ stories, userId }) => {
             ) : (
               <span className="font-medium">Add a Story</span>
             )}
-            <div className="absolute text-6xl text-gray-200 top-1">+</div>
+            <div className="absolute text-6xl text-gray-200 top-1" onClick={()=> open()}>+</div>
           </div>
         )}
       </CldUploadWidget>

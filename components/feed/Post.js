@@ -25,7 +25,7 @@ const Post = ({ post }) => {
               : post.user.username}
           </span>
         </div>
-        {userId === post.user.id && <PostInfo postId={post.id} />}
+        {userId === post.user.id && <PostInfo postId={post.id} imgId={post.imgId} />}
       </div>
       {/* DESC */}
       <div className="flex flex-col gap-4">
