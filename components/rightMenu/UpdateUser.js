@@ -9,7 +9,7 @@ import UpdateButton from "./UpdateButton";
 
 const UpdateUser = ({ user }) => {
   const [open, setOpen] = useState(false);
-  const [cover, setCover] = useState<any>(false);
+  const [cover, setCover] = useState(false);
 
   const [state, formAction] = useActionState(updateProfile,{success:false,error:false});
 

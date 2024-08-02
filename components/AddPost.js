@@ -1,7 +1,6 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-// import { auth } from "@clerk/nextjs/server";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
 import { useState } from "react";
@@ -17,6 +16,11 @@ const AddPost = () => {
     return "Loading...";
   }
 
+  const handleUploadSuccess = (result, { widget }) => {
+    setImg(result.info);
+    widget.close();
+  };
+
   return (
     <div className="p-4 bg-white shadow-md rounded-lg flex gap-4 justify-between text-sm">
       {/* AVATAR */}
@@ -30,7 +34,14 @@ const AddPost = () => {
       {/* POST */}
       <div className="flex-1">
         {/* TEXT INPUT */}
-        <form action={(formData)=>addPost(formData,img?.secure_url || "")} className="flex gap-4">
+        <form action={
+          (formData)=>{
+              addPost(formData,img?.secure_url || "", img?.public_id || "")
+              setDesc("")
+              setImg(null);
+            }
+          }
+          className="flex gap-4">
           <textarea
             placeholder="What's on your mind?"
             className="flex-1 bg-slate-100 rounded-lg p-2"
@@ -53,10 +64,7 @@ const AddPost = () => {
         <div className="flex items-center gap-4 mt-4 text-gray-400 flex-wrap">
           <CldUploadWidget
             uploadPreset="social"
-            onSuccess={(result, { widget }) => {
-              setImg(result.info);
-              widget.close();
-            }}
+            onSuccess={handleUploadSuccess}
           >
             {({ open }) => {
               return (

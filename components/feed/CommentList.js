@@ -3,7 +3,7 @@
 import { addComment } from "@/lib/actions";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useOptimistic } from "react";
 
 const CommentList = ({ comments, postId }) => {
   const { user } = useUser();

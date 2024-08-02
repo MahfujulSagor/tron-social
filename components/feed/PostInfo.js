@@ -4,10 +4,10 @@ import { deletePost } from "@/lib/actions";
 import Image from "next/image";
 import { useState } from "react";
 
-const PostInfo = ({ postId }) => {
+const PostInfo = ({ postId, imgId }) => {
   const [open, setOpen] = useState(false);
 
-  const deletePostWithId = deletePost.bind(null, postId);
+  const deletePostWithId = deletePost.bind(null, postId, imgId);
   return (
     <div className="relative">
       <Image
